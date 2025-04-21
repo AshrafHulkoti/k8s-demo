@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-api
+  labels:
+    app: sample-api
+spec:
+  replicas: 3  # Minimum of 3 pods
+  selector:
+    matchLabels:
+      app: sample-api
+  template:
+    metadata:
+      labels:
+        app: sample-api
+    spec:
+      containers:
+      - name: sample-api
+        image: docker.io/ashraf013/k8s-demo:latest
+        imagePullPolicy: Never  # For local testing
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"    # Request 100 milli-cores
+            memory: "128Mi" # Request 128 MB memory
+          limits:
+            cpu: "200m"    # Limit to 200 milli-cores
+            memory: "256Mi" # Limit to 256 MB memory
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
